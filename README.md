@@ -1,0 +1,1 @@
+# Emailcenter Maxautomation plugin
