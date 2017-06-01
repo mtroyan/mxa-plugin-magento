@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../Magento/Config/etc/system_file.xsd">
+    <system>
+        <tab id="emailcenter" translate="label" sortOrder="10">
+            <label>Emailcenter</label>
+        </tab>
+
+        <section id="emailcenter_maxautomation" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Maxautomation</label>
+            <tab>emailcenter</tab>
+            <resource>Emailcenter_Maxautomation::emailcenter_maxautomation</resource>
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>General</label>
+                <field id="enable" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Maxautomation</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>
+                        Enables plugin for Maxautomation.
+                    </comment>
+                </field>
+            </group>
+        </section>
+
+    </system>
+</config>
