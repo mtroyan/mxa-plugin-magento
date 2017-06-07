@@ -1,0 +1,14 @@
+{
+  "name": "emailcenter/maxautomation",
+  "description": "A plugin to send website subscribe data to Maxautomation by Emailcenter",
+  "require": {
+    "php": "^5.6 || ^7.0"
+  },
+  "type": "magento2-module",
+  "license": "LGPL-3.0",
+  "autoload": {
+    "files": [
+      "registration.php"
+    ]
+  }
+}
