@@ -9,9 +9,6 @@
   "autoload": {
     "files": [
       "registration.php"
-    ],
-    "psr-4": {
-      "Emailcenter\\Maxautomation\\": "src/"
-    }
+    ]
   }
 }
