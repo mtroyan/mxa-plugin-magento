@@ -1,5 +1,5 @@
 {
-  "name": "emailcenter/maxautomation",
+  "name": "emailcenter/mxm-plugin-magento2",
   "description": "A plugin to send website subscribe data to Maxautomation by Emailcenter",
   "require": {
     "php": "^5.6 || ^7.0"
