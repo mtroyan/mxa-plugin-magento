@@ -1,44 +1,67 @@
 <?php
 
-namespace Emailcenter\Maxautomation\src\Plugin;
+namespace Emailcenter\Maxautomation\Plugin;
 
-use Emailcenter\Maxautomation\src\Model\Sender;
+use Emailcenter\Maxautomation\MxaApi;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Newsletter\Model\Subscriber;
+use Magento\Store\Model\ScopeInterface;
 
 class SubscriberPlugin
 {
-    public function __construct(\Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig)
+    /**
+     * @var ScopeConfigInterface
+     */
+    private $scopeConfig;
+
+    /**
+     * @var MxaApi
+     */
+    private $api;
+
+    public function __construct(ScopeConfigInterface $scopeConfig)
     {
-        $this->_scopeConfig = $scopeConfig;
+        $this->scopeConfig = $scopeConfig;
     }
 
-    public function afterSubscribe(\Magento\Newsletter\Model\Subscriber $email, $proceed)
+    public function getEnabledConfigValue()
     {
-        $enabled = $this->_scopeConfig->getValue('emailcenter_maxautomation/general/enabled',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-        $token = $this->_scopeConfig->getValue('emailcenter_maxautomation/general/api_key',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        return $this->scopeConfig->getValue('emailcenter_maxautomation/general/enabled',
+            ScopeInterface::SCOPE_STORE);
+    }
 
-        if ($enabled == true && !empty($token)) {
-            if ($email->isStatusChanged() && $email->getStatus() ==
-            \Magento\Newsletter\Model\Subscriber::STATUS_SUBSCRIBED) {
-                $pass = new Sender($email->getId(), $email->getEmail(), $token);
-                $pass->sendContact();
+    public function afterSubscribe(Subscriber $email)
+    {
+        if ($this->getEnabledConfigValue() == true) {
+            if ($email->isStatusChanged() && $email->getStatus() == Subscriber::STATUS_SUBSCRIBED) {
+                $this->getMxaApi()->sendContact($email->getId(), $email->getEmail());
             }
         }
-        return $proceed;
+        return true;
     }
 
-    public function afterConfirm(\Magento\Newsletter\Model\Subscriber $code, $proceed)
+    public function afterConfirm(Subscriber $code)
     {
-        $enabled = $this->_scopeConfig->getValue('emailcenter_maxautomation/general/enabled',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-        $token = $this->_scopeConfig->getValue('emailcenter_maxautomation/general/api_key',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-
-        if ($enabled == true && !empty($token)) {
-            $pass = new Sender($code->getId(), $code->getEmail(), $token);
-            $pass->sendContact();
+        if ($this->getEnabledConfigValue() == true) {
+            $this->getMxaApi()->sendContact($code->getId(), $code->getEmail());
         }
-        return $proceed;
+        return true;
+    }
+
+    private function getMxaApi(): MxaApi
+    {
+        if ($this->api === null) {
+            $token = $this->scopeConfig->getValue('emailcenter_maxautomation/general/api_key',
+                ScopeInterface::SCOPE_STORE);
+            $this->api = new MxaApi($token);
+        }
+
+        return $this->api;
+    }
+
+    public function setMxaApi(MxaApi $mxaApi)
+    {
+        $this->api = $mxaApi;
+        return $this;
     }
 }
