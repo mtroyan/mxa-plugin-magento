@@ -3,7 +3,6 @@
 namespace Emailcenter\Maxautomation;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
@@ -23,11 +22,6 @@ class MxaApiTest extends TestCase
     private $mockHandler;
 
     /**
-     * @var Request $request
-     */
-    private $request;
-
-    /**
      * @var Client
      */
     private $client;
@@ -37,68 +31,70 @@ class MxaApiTest extends TestCase
      */
     private $mxaApi;
 
+    /**
+     * @var array
+     */
+    private $clientHistory = [];
+
     public function setUp()
     {
-        $this->mockHandler = new MockHandler([
-            new Response(200),
-            new Response(401)
-            ]);
+        $this->mockHandler = new MockHandler();
         $stack = HandlerStack::create($this->mockHandler);
 
-        $history = [];
-        $stack->push(Middleware::history($history));
+        $stack->push(Middleware::history($this->clientHistory));
         $this->client = new Client(['handler' => $stack]);
 
         $this->mxaApi = new MxaApi($this->token);
         $this->mxaApi->setClient($this->client);
+    }
+
+    public function testSendContactRequest()
+    {
+        $this->mockHandler->append(
+            new Response(200, [], json_encode(['name' => 'Trigger Name']))
+        );
         $this->mxaApi->sendContact($this->clientId, $this->email);
 
-        $this->assertCount(1, $history);
+        $this->assertCount(1, $this->clientHistory);
 
-        $this->request = $history[0]['request'];
-    }
+        /** @var Request $request */
+        $request = $this->clientHistory[0]['request'];
 
-    public function testMethod()
-    {
-        $this->assertEquals('POST', $this->request->getMethod());
-    }
+        // Method and URI
+        $this->assertEquals('POST', $request->getMethod());
+        $this->assertEquals('trigger/Magento%20New%20Subscriber', $request->getUri());
 
-    public function testUri()
-    {
-        $this->assertEquals('trigger/Magento%20New%20Subscriber', $this->request->getUri());
-    }
+        // Headers
+        $this->assertTrue($request->hasHeader('X-Auth-Token'));
+        $this->assertCount(1, $request->getHeader('X-Auth-Token'));
+        $this->assertEquals($this->token, $request->getHeader('X-Auth-Token')[0]);
 
-    public function testHeaders()
-    {
-        $headers = [
-            'X-Auth-Token'   => [$this->token],
-            'Content-Type'   => ['application/json'],
-            'Accept'         => ['application/json']
-        ];
+        $this->assertTrue($request->hasHeader('Content-Type'));
+        $this->assertCount(1, $request->getHeader('Content-Type'));
+        $this->assertEquals('application/json', $request->getHeader('Content-Type')[0]);
 
-        $headerContentType = $this->request->getHeaders()['Content-Type'][0];
-        $this->assertEquals($headers['Content-Type'][0], $headerContentType);
+        $this->assertTrue($request->hasHeader('Accept'));
+        $this->assertCount(1, $request->getHeader('Accept'));
+        $this->assertEquals('application/json', $request->getHeader('Accept')[0]);
 
-        $headerToken = $this->request->getHeaders()['X-Auth-Token'][0];
-        $this->assertEquals($headers['X-Auth-Token'][0], $headerToken);
-
-        $headerAccept = $this->request->getHeaders()['Accept'][0];
-        $this->assertEquals($headers['Accept'][0], $headerAccept);
-    }
-
-    public function testJson()
-    {
+        // Body
         $expected = [
             '$contactId' => $this->clientId,
             '$email' => $this->email
         ];
-        $json = \GuzzleHttp\json_decode($this->request->getBody(), true);
-        $this->assertEquals($expected, $json);
+        $this->assertEquals(json_encode($expected), (string)$request->getBody());
     }
 
-    public function test401Exception()
+    /**
+     * Check that an error response does NOT throw any exceptions
+     */
+    public function testSendContactSwallowsRequestExceptions()
     {
-        $this->expectException(RequestException::class);
-        $this->client->request('dummy 401 Unauthorised');
+        $this->mockHandler->append(
+            new Response(401, [], 'Unauthorized')
+        );
+        $this->mxaApi->sendContact($this->clientId, $this->email);
+
+        $this->assertCount(1, $this->clientHistory);
     }
 }

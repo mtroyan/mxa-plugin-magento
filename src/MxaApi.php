@@ -2,7 +2,6 @@
 
 namespace Emailcenter\Maxautomation;
 
-use GuzzleHttp\Psr7;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Client;
 
@@ -38,13 +37,9 @@ class MxaApi
             'timeout' => 2
         ];
         try {
-            $response = $this->getClient()->request('POST', 'trigger/Magento%20New%20Subscriber', $options);
-            $response->getBody()->getContents();
+            $this->getClient()->request('POST', 'trigger/Magento New Subscriber', $options);
         } catch (RequestException $e) {
-            Psr7\str($e->getRequest());
-            if ($e->hasResponse()) {
-                Psr7\str($e->getResponse());
-            }
+            // Swallow exceptions to avoid blocking Magento
         }
     }
 
