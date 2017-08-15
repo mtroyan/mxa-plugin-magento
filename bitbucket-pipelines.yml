@@ -4,8 +4,10 @@ image: composer
 pipelines:
   default:
     - step:
+        caches:
+          - composer
         script:
           - composer --version
-          - composer install
+          - composer install --ignore-platform-reqs
           - vendor/bin/phpunit --version
           - vendor/bin/phpunit
