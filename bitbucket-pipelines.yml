@@ -8,6 +8,6 @@ pipelines:
           - composer
         script:
           - composer --version
-          - composer install --ignore-platform-reqs
+          - composer install --ignore-platform-reqs --no-scripts
           - vendor/bin/phpunit --version
           - vendor/bin/phpunit
