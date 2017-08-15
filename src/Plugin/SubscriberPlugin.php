@@ -48,7 +48,7 @@ class SubscriberPlugin
         return true;
     }
 
-    private function getMxaApi(): MxaApi
+    private function getMxaApi()
     {
         if ($this->api === null) {
             $token = $this->scopeConfig->getValue('emailcenter_maxautomation/general/api_key',

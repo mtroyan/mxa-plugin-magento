@@ -3,7 +3,7 @@
     "description": "A plugin to send website subscribe data to Maxautomation by Emailcenter",
     "type": "magento2-module",
     "license": "LGPL-3.0",
-    
+
     "require": {
         "php": "^5.6 || ^7.0",
         "guzzlehttp/guzzle": "^6.1"
@@ -17,10 +17,10 @@
         }
     },
 
+    "minimum-stability": "beta",
     "require-dev": {
-        "php": "^7.0",
-        "phpunit/phpunit": "^6.1",
-        "magento/community-edition": "dev-2.2.0-preview"
+        "phpunit/phpunit": "^5.7",
+        "magento/community-edition": "~2.1.0"
     },
     "autoload-dev": {
         "psr-4": {

@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 namespace Emailcenter\Maxautomation;
 
@@ -19,12 +18,12 @@ class MxaApi
      */
     private $client;
 
-    public function __construct(string $token)
+    public function __construct($token)
     {
         $this->token = $token;
     }
 
-    public function sendContact(int $id, string $email)
+    public function sendContact($id, $email)
     {
         $headers = ['headers' => ['X-Auth-Token' => $this->token,
                                   'Content-Type' => 'application/json',
@@ -43,7 +42,7 @@ class MxaApi
         }
     }
 
-    private function getClient(): Client
+    private function getClient()
     {
         if ($this->client === null) {
             $this->client = new Client(['base_uri' => 'https://maxautomation.emailcenteruk.com/api/v1/']);
