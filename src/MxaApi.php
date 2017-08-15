@@ -25,14 +25,20 @@ class MxaApi
 
     public function sendContact($id, $email)
     {
-        $headers = ['headers' => ['X-Auth-Token' => $this->token,
-                                  'Content-Type' => 'application/json',
-                                  'Accept' => 'application/json'],
-                    'json' => ['$contactId' => $id,
-                               '$email' => $email],
-                    'timeout' => 2];
+        $options = [
+            'headers' => [
+                'X-Auth-Token' => $this->token,
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json'
+            ],
+            'json' => [
+                '$contactId' => $id,
+                '$email' => $email
+            ],
+            'timeout' => 2
+        ];
         try {
-            $response = $this->getClient()->request('POST', 'trigger/Magento%20New%20Subscriber', $headers);
+            $response = $this->getClient()->request('POST', 'trigger/Magento%20New%20Subscriber', $options);
             $response->getBody()->getContents();
         } catch (RequestException $e) {
             Psr7\str($e->getRequest());
