@@ -41,29 +41,17 @@ class SubscriberPluginTest extends TestCase
         $this->plugin->setMxaApi($this->mockMxaApi);
     }
 
-    public function testAfterSubscribeMethodCanBeCalledAndReturnsTrue()
-    {
-        $actual = $this->plugin->afterSubscribe($this->subscriberMock);
-        $this->assertTrue($actual);
-    }
-
-    public function testAfterConfirmMethodCanBeCalledandReturnsTrue()
-    {
-        $actual = $this->plugin->afterConfirm($this->subscriberMock);
-        $this->assertTrue($actual);
-    }
-
-    public function testGetEnabledConfigValue()
+    public function testIsEnabled()
     {
         $dbValue = 1;
         $scopeConfigMock = $this->scopeConfigMock;
         $scopeConfigMock->method('getValue')
             ->willReturn(true);
-        $subscriber = new \Emailcenter\Maxautomation\Plugin\SubscriberPlugin($scopeConfigMock);
-        $this->assertEquals($dbValue, $subscriber->getEnabledConfigValue());
+        $subscriber = new SubscriberPlugin($scopeConfigMock);
+        $this->assertEquals($dbValue, $subscriber->isEnabled());
     }
 
-    public function testSendContactIsTriggeredForAfterSubscribeMethod()
+    public function testAfterSubscribeCallsSendContact()
     {
         $this->scopeConfigMock->method('getValue')
             ->with('emailcenter_maxautomation/general/enabled', ScopeInterface::SCOPE_STORE, null)
@@ -90,7 +78,28 @@ class SubscriberPluginTest extends TestCase
         $this->plugin->afterSubscribe($this->subscriberMock);
     }
 
-    public function variableProvider()
+    /**
+     * @dataProvider providerAfterSubscribeDoesNotCallSendContact
+     */
+    public function testAfterSubscribeDoesNotCallSendContact($value, $changes, $status)
+    {
+        $this->scopeConfigMock->method('getValue')
+            ->with('emailcenter_maxautomation/general/enabled', ScopeInterface::SCOPE_STORE, null)
+            ->willReturn($value);
+
+        $this->subscriberMock->method('isStatusChanged')
+            ->willReturn($changes);
+
+        $this->subscriberMock->method('getStatus')
+            ->willReturn($status);
+
+        $this->mockMxaApi->expects($this->never())
+            ->method('sendContact');
+
+        $this->plugin->afterSubscribe($this->subscriberMock);
+    }
+
+    public function providerAfterSubscribeDoesNotCallSendContact()
     {
         return [
             [0, 0, 0],
@@ -101,28 +110,13 @@ class SubscriberPluginTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider variableProvider
-     */
-    public function testSendContactIsNotTriggeredForAfterSubscribeMethod($a, $b, $c)
+    public function testAfterSubscribeReturnsTrue()
     {
-        $this->scopeConfigMock->method('getValue')
-            ->with('emailcenter_maxautomation/general/enabled', ScopeInterface::SCOPE_STORE, null)
-            ->willReturn($a);
-
-        $this->subscriberMock->method('isStatusChanged')
-            ->willReturn($b);
-
-        $this->subscriberMock->method('getStatus')
-            ->willReturn($c);
-
-        $this->mockMxaApi->expects($this->never())
-            ->method('sendContact');
-
-        $this->plugin->afterSubscribe($this->subscriberMock);
+        $actual = $this->plugin->afterSubscribe($this->subscriberMock);
+        $this->assertTrue($actual);
     }
 
-    public function testSendContactIsNotTriggeredForAfterConfirmMethod()
+    public function testAfterConfirmDoesNotCallSendContact()
     {
         $this->scopeConfigMock->method('getValue')
             ->with('emailcenter_maxautomation/general/enabled', ScopeInterface::SCOPE_STORE, null)
@@ -134,7 +128,7 @@ class SubscriberPluginTest extends TestCase
         $this->plugin->afterConfirm($this->subscriberMock);
     }
 
-    public function testSendContactIsTriggeredForAfterConfirmMethod()
+    public function testAfterConfirmCallsSendContact()
     {
         $this->scopeConfigMock->method('getValue')
             ->with('emailcenter_maxautomation/general/enabled', ScopeInterface::SCOPE_STORE, null)
@@ -153,5 +147,11 @@ class SubscriberPluginTest extends TestCase
             ->with($id, $email);
 
         $this->plugin->afterConfirm($this->subscriberMock);
+    }
+
+    public function testAfterConfirmReturnsTrue()
+    {
+        $actual = $this->plugin->afterConfirm($this->subscriberMock);
+        $this->assertTrue($actual);
     }
 }
