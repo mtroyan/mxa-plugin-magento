@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="emailcenter" translate="label" sortOrder="10">
+            <label>Emailcenter</label>
+        </tab>
+
+        <section id="emailcenter_maxautomation" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Maxautomation</label>
+            <tab>emailcenter</tab>
+            <resource>Emailcenter_Maxautomation::emailcenter_maxautomation</resource>
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General settings</label>
+                <field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Extension</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="api_key" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>API Key</label>
+                    <comment>Please contact your Maxautomation Account Manager to receive the API key</comment>
+                    <validate>validate-no-empty</validate>
+                </field>
+            </group>
+        </section>
+
+    </system>
+</config>

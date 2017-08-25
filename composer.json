@@ -1,25 +1,30 @@
 {
     "name": "emailcenter/mxa-plugin-magento",
     "description": "Maxautomation Plugin for Magento 2",
+    "type": "magento2-module",
     "license" : "LGPL-3.0",
 
+    "require": {
+        "php": "^5.6 || ^7.0",
+        "guzzlehttp/guzzle": "^6.1"
+    },
     "autoload": {
+        "files": [
+            "registration.php"
+        ],
         "psr-4": {
-            "Mxa\\": "src/"
+            "Emailcenter\\Maxautomation\\": "src/"
         }
     },
 
-    "require": {
-        "php" : "^5.6|^7.0"
+    "minimum-stability": "beta",
+    "require-dev": {
+        "phpunit/phpunit": "^5.7",
+        "magento/community-edition": "~2.1.0"
     },
-
     "autoload-dev": {
         "psr-4": {
-            "Mxa\\": "tests/"
+            "Emailcenter\\Maxautomation\\": "tests/"
         }
-    },
-
-    "require-dev": {
-        "phpunit/phpunit" : "^5.7"
     }
 }
