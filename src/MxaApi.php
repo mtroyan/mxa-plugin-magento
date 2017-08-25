@@ -6,7 +6,8 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Client;
 
 /**
- * @package emailcenter/maxautomation-plugin-magento
+ * @package emailcenter/mxa-plugin-magento
+ * @license LGPL-3.0
  */
 class MxaApi
 {

@@ -8,7 +8,8 @@ use Magento\Newsletter\Model\Subscriber;
 use Magento\Store\Model\ScopeInterface;
 
 /**
- * @package emailcenter/maxautomation-plugin-magento
+ * @package emailcenter/mxa-plugin-magento
+ * @license LGPL-3.0
  */
 class SubscriberPlugin
 {
