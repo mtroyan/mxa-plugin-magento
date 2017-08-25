@@ -24,15 +24,18 @@ class SubscriberPlugin
         $this->scopeConfig = $scopeConfig;
     }
 
+    /**
+     * @return boolean
+     */
     public function isEnabled()
     {
-        return $this->scopeConfig->getValue('emailcenter_maxautomation/general/enabled',
+        return (bool) $this->scopeConfig->getValue('emailcenter_maxautomation/general/enabled',
             ScopeInterface::SCOPE_STORE);
     }
 
     public function afterSubscribe(Subscriber $email)
     {
-        if ($this->isEnabled() == true) {
+        if ($this->isEnabled() === true) {
             if ($email->isStatusChanged() && $email->getStatus() == Subscriber::STATUS_SUBSCRIBED) {
                 $this->getMxaApi()->sendContact($email->getId(), $email->getEmail());
             }
@@ -42,7 +45,7 @@ class SubscriberPlugin
 
     public function afterConfirm(Subscriber $code)
     {
-        if ($this->isEnabled() == true) {
+        if ($this->isEnabled() === true) {
             $this->getMxaApi()->sendContact($code->getId(), $code->getEmail());
         }
         return true;
