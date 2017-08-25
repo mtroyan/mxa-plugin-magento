@@ -5,6 +5,9 @@ namespace Emailcenter\Maxautomation;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Client;
 
+/**
+ * @package emailcenter/maxautomation-plugin-magento
+ */
 class MxaApi
 {
     /**
@@ -17,11 +20,19 @@ class MxaApi
      */
     private $client;
 
+    /**
+     * @param string $token
+     */
     public function __construct($token)
     {
         $this->token = $token;
     }
 
+    /**
+     * @param int $id
+     * @param string $email
+     * @return void
+     */
     public function sendContact($id, $email)
     {
         $options = [
@@ -43,6 +54,9 @@ class MxaApi
         }
     }
 
+    /**
+     * @return Client
+     */
     private function getClient()
     {
         if ($this->client === null) {
@@ -51,8 +65,13 @@ class MxaApi
         return $this->client;
     }
 
+    /**
+     * @param Client $client
+     * @return $this
+     */
     public function setClient(Client $client)
     {
         $this->client = $client;
+        return $this;
     }
 }

@@ -7,6 +7,9 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Newsletter\Model\Subscriber;
 use Magento\Store\Model\ScopeInterface;
 
+/**
+ * @package emailcenter/maxautomation-plugin-magento
+ */
 class SubscriberPlugin
 {
     /**
@@ -19,6 +22,9 @@ class SubscriberPlugin
      */
     private $api;
 
+    /**
+     * @param ScopeConfigInterface $scopeConfig
+     */
     public function __construct(ScopeConfigInterface $scopeConfig)
     {
         $this->scopeConfig = $scopeConfig;
@@ -33,6 +39,10 @@ class SubscriberPlugin
             ScopeInterface::SCOPE_STORE);
     }
 
+    /**
+     * @param Subscriber $email
+     * @return bool
+     */
     public function afterSubscribe(Subscriber $email)
     {
         if ($this->isEnabled() === true) {
@@ -43,6 +53,10 @@ class SubscriberPlugin
         return true;
     }
 
+    /**
+     * @param Subscriber $code
+     * @return bool
+     */
     public function afterConfirm(Subscriber $code)
     {
         if ($this->isEnabled() === true) {
@@ -51,6 +65,9 @@ class SubscriberPlugin
         return true;
     }
 
+    /**
+     * @return MxaApi
+     */
     private function getMxaApi()
     {
         if ($this->api === null) {
@@ -61,6 +78,10 @@ class SubscriberPlugin
         return $this->api;
     }
 
+    /**
+     * @param MxaApi $mxaApi
+     * @return $this
+     */
     public function setMxaApi(MxaApi $mxaApi)
     {
         $this->api = $mxaApi;
