@@ -8,9 +8,8 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use PHPUnit\Framework\TestCase;
 
-class MxaApiTest extends TestCase
+class MxaApiTest extends \PHPUnit_Framework_TestCase
 {
     private $token = '1235test';
     private $clientId = 123;

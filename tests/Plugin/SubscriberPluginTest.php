@@ -6,9 +6,8 @@ use Emailcenter\Maxautomation\MxaApi;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Newsletter\Model\Subscriber;
 use Magento\Store\Model\ScopeInterface;
-use PHPUnit\Framework\TestCase;
 
-class SubscriberPluginTest extends TestCase
+class SubscriberPluginTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var SubscriberPlugin|\PHPUnit_Framework_MockObject_MockObject
@@ -32,12 +31,27 @@ class SubscriberPluginTest extends TestCase
 
     protected function setUp()
     {
-        $this->subscriberMock = $this->createMock(Subscriber::class);
+        // @todo replace with createMock() for PHPUnit >= 5.4
+        $this->subscriberMock = $this->getMockBuilder(Subscriber::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->getMock();
 
-        $this->scopeConfigMock = $this->createMock(ScopeConfigInterface::class);
+        // @todo replace with createMock() for PHPUnit >= 5.4
+        $this->scopeConfigMock = $this->getMockBuilder(ScopeConfigInterface::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->getMock();
         $this->plugin = new SubscriberPlugin($this->scopeConfigMock);
 
-        $this->mockMxaApi = $this->createMock(MxaApi::class);
+        // @todo replace with createMock() for PHPUnit >= 5.4
+        $this->mockMxaApi = $this->getMockBuilder(MxaApi::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->getMock();
         $this->plugin->setMxaApi($this->mockMxaApi);
     }
 
